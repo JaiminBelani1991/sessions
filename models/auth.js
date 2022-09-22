@@ -1,15 +1,17 @@
-const Model = require('knex');
-
-const dbConfig = {
+require('dotenv').config();
+const { Model } = require('objection');
+const Knex = require('knex');
+const knex = Knex({
+  client: 'pg',
+  connection: {
     host: process.env.DB_HOST,
-    username: process.env.DB_USER,
+    user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT
-}
-Model.knex(dbConfig).client();
-console.log(Model.knex(dbConfig).client());
+    database: process.env.DB_NAME
+  },
+  debug: process.env.DB_DEBUG === 'true',
+});
+knex.on('query', data => { console.dir(data) });
 
-module.exports = {
-    Model
-}
+Model.knex(knex);
+module.exports =  Model;

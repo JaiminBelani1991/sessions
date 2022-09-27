@@ -5,6 +5,9 @@ const get = async () => {
 }
 
 const save = async (userBody) => {
+    const maxId = await userModel.knex().raw('SELECT (MAX(id) + 1) as tableId FROM public.user');
+    console.log(maxId && maxId.rows[0].tableid)
+    userBody.id = maxId && maxId.rows && maxId.rows[0] && maxId.rows[0].tableid;
     return await userModel.query().insertGraphAndFetch(userBody);
 }
 
